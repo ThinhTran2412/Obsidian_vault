@@ -1,0 +1,222 @@
+{
+  "main": {
+    "id": "05971fc0f9455f9f",
+    "type": "split",
+    "children": [
+      {
+        "id": "3f63ec97e0e88065",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "9cfebbd30cb4ee3b",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "projects/SHOOTMATCH/[SHOOTMATCH]_API-reference.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "[SHOOTMATCH]_API-reference"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "676824b8a4564a08",
+    "type": "split",
+    "children": [
+      {
+        "id": "89ba2e626391c8d6",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "6edab82d49bec968",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "a7a1344c27a03571",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "13eacaa48b457cb4",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "f2782c933a9f8228",
+    "type": "split",
+    "children": [
+      {
+        "id": "354dbaeb202ee14c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "326099030a115e7d",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Welcome.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks for Welcome"
+            }
+          },
+          {
+            "id": "dfc492aae849792f",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Welcome.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links from Welcome"
+            }
+          },
+          {
+            "id": "ed815c12a56e2c8a",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "a3ec9f2e3a6af5b7",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "c01b5238651a4402",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Welcome.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline of Welcome"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "9cfebbd30cb4ee3b",
+  "lastOpenFiles": [
+    "projects/SHOOTMATCH/[SHOOTMATCH]_codebase-map.md",
+    "projects/SHOOTMATCH/[SHOOTMATCH]_API-reference.md",
+    "projects/SHOOTMATCH/[SHOOTMATCH]_UI-progress.md",
+    "projects/SHOOTMATCH/[SHOOTMATCH]_implementation-log.md",
+    "projects/SHOOTMATCH/[SHOOTMATCH]_context.md",
+    "projects/SHOOTMATCH/[SHOOTMATCH]_backlog.md",
+    "projects/SHOOTMATCH/[SHOOTMATCH]_architecture.md",
+    "Brain.md",
+    "projects/Smart-Service-System/retro.md",
+    "projects/OJT-Laboratory/retro.md",
+    "projects/Smart-Service-FE/context.md",
+    "projects/_template/[Template]_retro.md",
+    "skills/patterns.md",
+    "projects/OJT-Laboratory/context.md",
+    "projects/Smart-Service-System/context.md",
+    "projects/Smart-Service-FE/[Smart-Service-FE]_retro.md",
+    "projects/Smart-Service-BE/[Smart-Service-BE]_retro.md",
+    "projects/SWP-BloodLine/[SWP-BloodLine]_architecture.md",
+    "projects/OJT-Laboratory/[OJT-Laboratory]_architecture.md",
+    "projects/_template/[Template]_context.md",
+    "projects/Smart-Service-System/[Smart-Service-System]_context.md",
+    "projects/Smart-Service-FE/[Smart-Service-FE]_context.md",
+    "projects/Smart-Service-BE/[Smart-Service-BE]_context.md",
+    "projects/SWP-BloodLine/[SWP-BloodLine]_context.md",
+    "projects/OJT-Laboratory/[OJT-Laboratory]_context.md",
+    "projects/OJT-Deploy/[OJT-Deploy]_context.md",
+    "trash/Untitled.base",
+    "trash",
+    "Untitled.base",
+    "projects/SWP-BloodLine",
+    "projects/OJT-Laboratory",
+    "projects/OJT-Deploy",
+    "projects/Smart-Service-System"
+  ]
+}
