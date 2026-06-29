@@ -19,5 +19,6 @@ Khi người dùng gõ một trong các từ khóa sau trong khung chat:
 2. **Kiểm tra kho lưu trữ:** Đọc (view_file) qua các file hiện có trong thư mục `learning`.
 3. **Phân bổ thông minh:** Tự động quyết định kiến thức nào sẽ được cập nhật vào file nào. 
    - Ví dụ: Tiến độ học tập thì đẩy vào file `devops-intern-roadmap.md` (check [x] và viết Daily Log). Các tổ hợp công nghệ thì ném vào `devops-tech-combos.md`. Kiến thức rời rạc thì tự động tạo file `.md` mới.
+   - **🔴 CẢNH BÁO TỐI QUAN TRỌNG:** KHÔNG BAO GIỜ ĐƯỢC QUÊN việc check dấu `[x]` vào Roadmap và viết tóm tắt vào mục Nhật Ký Học Tập (Daily Log) ở cuối file `devops-intern-roadmap.md`. Đây là bước BẮT BUỘC đi kèm trong mọi lệnh "cập nhật".
 4. **Hành động:** Gọi tool (replace_file_content / write_to_file) để chèn nội dung vào TẤT CẢ các file liên quan ngay lập tức. Đảm bảo format Markdown chuẩn chỉnh, giữ đúng các tiêu chuẩn viết Technical Deep Dive.
 5. **Báo cáo:** Liệt kê tóm tắt lại cho đại ca Thịnh danh sách những file nào vừa được hệ thống tự động lưu vào Vault.
