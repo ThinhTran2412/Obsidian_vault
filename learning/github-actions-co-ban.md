@@ -142,3 +142,105 @@ Bạn hãy tưởng tượng bạn là **Quản đốc nhà máy (GitHub)**:
 - `on`: Bạn ra luật "Cứ 8h sáng (`schedule`) là khởi động máy".
 - `jobs`: Bạn lập 2 nhóm thợ. Nhóm A (`job 1`) đóng gói sản phẩm, nhóm B (`job 2`) dán tem bảo hành. Hai nhóm này mượn 2 cái bàn làm việc khác nhau (`runs-on: ubuntu`).
 - `steps`: Trưởng nhóm cầm tờ giấy có các gạch đầu dòng (`-`). Đầu tiên lấy dụng cụ có sẵn (`uses`), sau đó tự tay làm các công đoạn (`run`). Và mỗi bước đều ghi rõ đang làm gì (`name`) để quản đốc dễ theo dõi tiến độ trên bảng điện tử (Giao diện Web).
+
+---
+
+## 4. Kiến thức Medium Level (Level-up)
+
+### 4.1. Các "Ngạch Cấp 1" (Top-level Keys) Mở Rộng
+Ngoài bộ tứ cơ bản `name`, `on`, `env`, `jobs`, ở trình độ cao hơn sẽ thường dùng:
+- `concurrency`: Quản lý luồng chạy, tự động hủy các luồng cũ đang chạy dở nếu có luồng mới (giúp tiết kiệm tài nguyên server/tiền bạc).
+- `permissions`: Quản lý quyền hạn của GITHUB_TOKEN (ví dụ: cấp quyền tự động tạo Release, viết Comment vào Pull Request).
+- `defaults`: Đặt cấu hình mặc định cho tất cả các `run` steps (VD: luôn chạy bằng `bash` shell hoặc luôn cd vào thư mục `./src`).
+- `run-name`: Tên động cho lịch sử chạy trên giao diện web (VD: `run-name: Deploy app bởi ${{ github.actor }}`).
+
+### 4.2. Cấu Trúc Chi Tiết Bên Trong Một Job
+Bên cạnh `runs-on` và `steps` là 2 thứ bắt buộc, một Job thực tế thường được trang bị thêm:
+- `needs`: Móc nối thứ tự các job. (VD: `needs: [build-job]` -> Báo hiệu job này phải kiên nhẫn chờ `build-job` chạy xong và thành công mới được bắt đầu).
+- `if`: Công tắc điều kiện để quyết định sinh tử của job (VD: chỉ chạy job này nếu người dùng đang push lên nhánh `main`).
+- `strategy`: Tuyệt chiêu phân thân (matrix) dùng để chạy test đa môi trường. Ví dụ: test app trên Node v18, v20, v22 cùng một lúc trên các máy ảo song song.
+- `outputs`: Cổng xuất dữ liệu, dùng để truyền biến/kết quả từ job này sang job khác.
+
+### 4.3. Giải Ngố Cú Pháp YAML: Object vs Array (Bí quyết trị lỗi Duplicate Key)
+- **Chỗ KHÔNG CÓ dấu `-` (Object/Bản đồ):** Dùng để khai báo các thuộc tính tĩnh (Tên: Giá trị). Mỗi cái Tên (Key) **chỉ được xuất hiện duy nhất 1 lần** trong cùng 1 cấp.
+- **Chỗ CÓ dấu `-` (Array/Danh sách):** Báo hiệu bắt đầu một phần tử mới trong một danh sách các công việc. 
+👉 Đó là lý do tại sao bên trong `steps` lại phải dùng `- name: ...` thay vì `name: ...`. Vì `steps` bản chất là một **chuỗi/danh sách** gồm nhiều bước thực thi nối tiếp nhau. Chữ `-` giúp máy tính phân định rạch ròi đâu là bước 1, đâu là bước 2, nhờ đó chúng ta có thể thoải mái tái sử dụng từ khóa `name` và `run` ở các bước khác nhau mà không sợ máy chửi lỗi trùng lặp (Duplicate key).
+
+### 4.4. Các "Vũ Khí" Thực Chiến Thường Dùng (Kèm Ví Dụ)
+
+**1. `working-directory` (Đặc trị cho Monorepo)**
+Thay vì phải gõ `cd` ở mỗi lệnh, ta chốt luôn thư mục làm việc mặc định cho Job đó.
+```yaml
+jobs:
+  build-backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./pickic-api # Khóa cứng mục tiêu vào thư mục backend
+    steps:
+      - uses: actions/checkout@v4
+      - name: Chạy build Backend
+        run: dotnet build # Nó tự động chạy bên trong ./pickic-api
+```
+
+**2. Cầu chì `timeout-minutes` và Kim bài `continue-on-error`**
+```yaml
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5 # Chạy quá 5 phút là tự động ngắt điện
+    steps:
+      - name: Quét mã độc râu ria
+        run: npm run scan-lint
+        continue-on-error: true # Lỡ có fail thì vứt đấy, chạy tiếp bước sau
+```
+
+**3. Khối lệnh Terminal đa dòng với dấu `|`**
+```yaml
+    steps:
+      - name: Dọn dẹp và Build
+        run: |
+          echo "Bắt đầu dọn rác..."
+          rm -rf node_modules
+          npm install
+          echo "Cài đặt hoàn tất!"
+```
+
+### 4.5. Giải phẫu Cú pháp Biểu thức `${{ }}` (Expression Syntax)
+Cặp ngoặc này **KHÔNG PHẢI** chỉ để chèn biến. Nó là một bộ máy xử lý logic thực thụ của GitHub Actions. Đại ca có thể viết các phép so sánh (==, !=, &&, ||) và gọi các hàm (functions) do GitHub cung cấp ngay bên trong nó.
+
+**Ví dụ thực tế:**
+```yaml
+steps:
+  - name: Bước này cực kỳ kén cá chọn canh
+    # Chỉ chạy nếu người dùng tên là 'ThinhTran' VÀ đang ở nhánh 'main'
+    if: ${{ github.actor == 'ThinhTran2412' && github.ref == 'refs/heads/main' }}
+    run: echo "Đại ca đã xuất hiện!"
+
+  - name: Quét mã hash
+    # Hàm hashFiles() cực hay dùng để kiểm tra xem file package.json có bị thay đổi không (dùng để cache)
+    run: echo "Mã băm là: ${{ hashFiles('**/package.json') }}"
+```
+*Các hàm tích hợp sẵn lợi hại nhất:* `contains()`, `startsWith()`, `endsWith()`, `fromJson()`, `hashFiles()`, `success()`, `failure()`.
+
+---
+
+## 5. Quản Lý Bảo Mật: `.env` và GitHub Secrets (Tối Quan Trọng)
+
+### 5.1. Bẫy Tử Thần: Đừng bao giờ nhét `.env` vào Docker Image
+Khi GitHub chạy `docker build`, nó đóng gói mã nguồn thành cục Image (Robot). **TUYỆT ĐỐI KHÔNG** được gói file `.env` chứa mật khẩu thật vào trong Image này. Vì nếu lỡ Image bị leak ra ngoài (hoặc dùng public registry), bất kỳ ai cũng có thể đọc được sạch mật khẩu (thông qua lệnh `docker history`). Nhiệm vụ của Image chỉ là chứa Code và Thư viện.
+
+### 5.2. Sự khác biệt giữa GitHub Secrets và `.env` local
+- **Ở máy Local (Máy cá nhân & Server VPS thật):** Sử dụng file `.env` bình thường để mồi biến môi trường cho ứng dụng (hoặc container) chạy. File này luôn phải bị đưa vào `.gitignore`.
+- **Ở môi trường GitHub Actions:** Vì GitHub không có file `.env`, ta dùng **GitHub Secrets** (Cài đặt trên giao diện Web: `Settings > Secrets and variables > Actions`). Nó đóng vai trò như một "Két sắt đám mây", cung cấp biến tạm thời cho máy ảo của GitHub để phục vụ quá trình Build và Deploy (Ví dụ: cần mật khẩu `DOCKER_PASS` để đăng nhập đẩy Image lên Docker Hub).
+
+### 5.3. Chiến Thuật `.env.example` (Tiêu chuẩn công nghiệp)
+Vì file `.env` không được đẩy lên Git, làm sao để người khác (hoặc chính mình lúc deploy lên VPS) nhớ được app cần truyền vào những biến môi trường nào?
+👉 **Cách giải quyết:** Tạo file `.env.example` (hoặc `.env.template`) chỉ chứa Tên Biến, bỏ trống phần Giá Trị.
+```env
+# file .env.example (Được phép push lên GitHub)
+DB_HOST=
+DB_USER=
+DB_PASS=
+```
+Khi setup lên Server VPS, chỉ cần gõ lệnh `cp .env.example .env` rồi tự tay mở file `.env` điền mật khẩu thật vào. Cực kỳ an toàn và tránh sai sót!
