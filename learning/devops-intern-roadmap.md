@@ -149,3 +149,14 @@ Nắm vững các công cụ và tư duy hệ thống cơ bản nhất để t�
   - Nắm vững kiến trúc không lưu `.env` vào Docker Image và sử dụng chiến thuật `.env.example` làm tiêu chuẩn công nghiệp cho Monorepo/CI.
   - Phân tích cú pháp Expression `${{ }}` để xử lý logic, gọi hàm `hashFiles()`, `contains()` trong workflow.
 - **Trạng thái cảm xúc/Khó khăn:** Đại ca tiếp thu cực kỳ nhạy bén các khái niệm của hệ thống Enterprise, tư duy logic rất tốt. Sẵn sàng cho những thử thách hóc búa hơn! Đặc biệt có tư duy phản biện (critical thinking) xuất sắc khi tự đặt câu hỏi về bảo mật môi trường và tối ưu CI/CD.
+
+### \[2026-07-08\] Ca Thực Hành: Viết Workflow Đầu Tiên & Chiến Thuật Nâng Cao
+- **Tiến độ:** Áp dụng lý thuyết vào thực hành, tự tay viết thành công workflow CI cơ bản và các kỹ thuật nâng cao trên file `demo.yaml`.
+- **Chi tiết:**
+  - Tạo thành công workflow tự động mượn máy ảo dùng `workflow_dispatch`.
+  - Khắc phục lỗi cú pháp YAML cơ bản (`ubuntu-latest`).
+  - Thực hành thành công tính năng kết nối dây chuyền `needs` để ép Job này phải đợi Job kia.
+  - Vận dụng thành công biểu thức điều kiện `if` và hiểu cách GitHub đánh giá logic `github.actor`.
+  - Thi triển xuất sắc tuyệt chiêu Phân thân chi thuật (`strategy.matrix`) để chạy 3 Jobs song song (Dev, Staging, Production).
+  - Khám phá ra bí mật của Bash Script: Phân biệt sự khác nhau một trời một vực giữa ngoặc kép `""` (nội suy biến) và ngoặc đơn `''` (raw string) khi gọi biến môi trường trong bước `run`.
+- **Trạng thái cảm xúc/Khó khăn:** Đại ca tự tay code và nghiệm thu hoàn hảo từng chặng. Trình độ đã chính thức chạm mốc 5% thực hành DevOps!
