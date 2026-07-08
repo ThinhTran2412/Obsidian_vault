@@ -1,0 +1,29 @@
+name: Hello Workflow 
+
+on:
+  workflow_dispatch:
+
+env: 
+  GREETING_MSG: 'Chào Đại Ca Đi'
+
+jobs: 
+  say-hello:
+    runs-on: ubuntu-latest
+
+    steps: 
+      - name: hehe
+        run: echo $GREETING_MSG
+  
+  deploy-app:
+    needs: say-hello
+    if: ${{github.actor == 'Thinhtran2412'}}
+    runs-on: ubuntu-latest
+    strategy: 
+      matrix: 
+        server_env: ['Dev', 'Staging','Production']
+
+    steps: 
+      - name: Deploy App 
+        run: |
+          echo "${{github.actor}} chuẩn bị deploy lên....."
+          echo ${{matrix.server_env}}
