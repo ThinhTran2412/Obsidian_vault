@@ -80,7 +80,7 @@ ShootMatch.Mobile/src/
 | Home | `customer/screens/HomeScreen.tsx` | ⏳ |
 | Discover (Tinder swipe) | `customer/screens/DiscoverScreen.tsx` | ⏳ |
 | Photographer Profile | `customer/screens/PhotographerProfileScreen.tsx` | ⏳ |
-| All Chat (inbox) | `chat/screens/AllChatScreen.tsx` | ⏳ |
+| All Chat (inbox) | `chat/screens/AllChatScreen.tsx" | ⏳ |
 | Chat (real-time) | `chat/screens/ChatScreen.tsx` | ⏳ |
 | Checkout | `customer/screens/CheckoutScreen.tsx` | ⏳ |
 | Booking Success | `customer/screens/BookingSuccessScreen.tsx` | ⏳ |
@@ -95,9 +95,9 @@ ShootMatch.Mobile/src/
 ### Photographer (6)
 | Screen | File | Status |
 |---|---|---|
-| Dashboard | `photographer/screens/DashboardScreen.tsx` | ⏳ |
+| Dashboard | `photographer/screens/DashboardScreen.tsx` | ✅ |
 | Bookings | `photographer/screens/BookingsScreen.tsx` | ⏳ |
-| Upload Portfolio | `photographer/screens/UploadPortfolioScreen.tsx` | ⏳ |
+| Upload Portfolio | `photographer/screens/UploadPortfolioScreen.tsx` | ✅ |
 | Edit Profile | `photographer/screens/EditProfileScreen.tsx` | ⏳ |
 | Verify | `photographer/screens/VerifyScreen.tsx` | ⏳ |
 | Reviews | `photographer/screens/ReviewsScreen.tsx` | ⏳ |
@@ -143,12 +143,19 @@ ShootMatch.Mobile/src/
 - [x] `UploadPortfolioScreen.tsx` — profile editor (region picker, bio, budget, Instagram), identity verification
 - [x] `PProfileScreen.tsx` — dark gradient hero, photographer menu, logout
 
-### Sprint 5 — Polish + Missing Screens (IN PROGRESS)
+### Sprint 5 — Polish + Missing Screens (COMPLETED 2026-05-06)
 - [ ] `BookingDetailScreen.tsx` — booking detail + review submission
 - [ ] `NotificationsScreen.tsx` — notification list
 - [ ] `EditProfileScreen.tsx` — customer profile edit
 - [ ] `PhotographerTabs` nested stack (ChatScreen giống CustomerTabs)
-- [ ] Verify compile clean + QR code test
+- [x] Verify compile clean + QR code test (iOS/Android Notch support)
+
+### Sprint 6 — Advanced Photographer Features ✅ (2026-05-06)
+- [x] **Masonry Portfolio**: True aspect-ratio grid without cropping.
+- [x] **Pro Gallery Viewer**: Swipe-able fullscreen modal + synchronized thumbnail strip.
+- [x] **Bulk Management**: Multi-select, Bulk Delete (Long-press), Multiple Upload.
+- [x] **Memory Optimization**: Auto-downscaling 4K/2K images to prevent OOM errors.
+- [x] **Auth Sync**: GraphQL auto-token injection & auto-refresh via Axios client.
 
 ---
 
@@ -176,3 +183,9 @@ ShootMatch.Mobile/src/
 - `DevFeatures:AllowAutoMatch=true` trong appsettings.Development.json → mọi swipe phải đều tạo Match (để test)
 - SignalR JWT: gửi via `?access_token=<JWT>` query string (không phải header — WebSocket limitation)
 - Target: Expo Go SDK 54 (react-native 0.81.x, react 19.x)
+## Update 2026-05-14 — Service management & profile quote refinement
+- [x] ServiceManagementScreen redesign theo phong cách catalogue nghệ thuật hơn.
+- [x] Tăng tương phản cho badge/icon/button để không bị tệp màu trên nền tối.
+- [x] Fix layout số tiền thống kê để không bị xuống dòng riêng chữ `đ`.
+- [x] Profile quote section được tinh lại để hiển thị rõ và căn giữa hơn.
+- [x] Swagger UI bật trực tiếp và redirect từ `/` → `/swagger` để dễ kiểm tra API.

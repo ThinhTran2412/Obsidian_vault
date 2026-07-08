@@ -2,7 +2,7 @@
 
 ## Snapshot
 - **Ngày cập nhật**: 2026-04-20
-- **Mục tiêu phiên này**: chạy PostgreSQL migration, tách command/query, và lập danh mục đầy đủ Domain/Entity + nghiệp vụ đã triển khai.
+- **Mục tiêu phiên này**: chạy PostgreSQL Migration, tách command/query, và lập danh mục đầy đủ Domain/Entity + nghiệp vụ đã triển khai.
 
 ## 1) Những gì đã triển khai (full list)
 
@@ -39,13 +39,13 @@
   - `GetSwipeFeedQueryHandler`
   - GraphQL resolver gọi handler query.
 
-### E. PostgreSQL + EF Core migration
+### E. PostgreSQL + EF Core Migration
 - Thêm package:
   - `Microsoft.EntityFrameworkCore (9.0.10)`
   - `Npgsql.EntityFrameworkCore.PostgreSQL (9.0.4)`
   - `Microsoft.EntityFrameworkCore.Design (9.0.10)`
 - Tạo `ShootMatchDbContext` với schema `shootmatch`.
-- Tạo migration:
+- Tạo Migration:
   - `InitPostgres` (file migration + snapshot được tạo thành công).
 - Chạy `database update`:
   - Kết quả: **chưa apply thành công** do lỗi network/DNS tới host Supabase (`No such host is known`).
@@ -83,7 +83,7 @@
    - Nhận 3-5 ảnh tham khảo.
    - Validate số lượng ảnh.
 2. **Encode & Aggregate Style**
-   - Encode ảnh -> vector 768d (stub hợp đồng SigLIP-ready).
+   - Encode ảnh -> vector 768d (stub hợp đồng SigLiP-ready).
    - Mean pooling cho vector đại diện user.
 3. **Similarity Matching**
    - Cosine similarity theo từng embedding portfolio.
@@ -110,7 +110,7 @@
 
 ## 5) Vấn đề cần xử lý tiếp
 1. Apply migration lên PostgreSQL thật (kiểm tra lại hostname/connection string hoặc DNS).
-2. Thay `StubSiglipEncoder` bằng inference service SigLIP thật.
+2. Thay `StubSiglipEncoder` bằng inference service SigLiP thật.
 3. Chuyển repository từ in-memory sang PostgreSQL/pgvector query.
 4. Di chuyển secret DB ra environment variable/user-secrets.
 
@@ -174,11 +174,10 @@
   - Thiết kế Real-time Chat (SignalR/Supabase).
   - Tích hợp Payment Gateway (VNPay/Stripe).
   - Thay repository in-memory bằng PostgreSQL implementation.
-  - Setup SigLIP inference service thật.
+  - Setup SigLiP inference service thật.
 
 ## Session 2026-05-03 01:31 — Conversation + SignalR + P1 Fixes
-
-- Goal: Implement Conversation/Message/real-time chat (SignalR), fix P1 gaps (VerificationRequest audit trail, MatchCreated event drop, HasPhotographerSwipedRightAsync TODO).
+- Goal: implement Conversation/Message/real-time chat (SignalR), fix P1 gaps (VerificationRequest audit trail, MatchCreated event drop, HasPhotographerSwipedRightAsync TODO).
 - Changes:
   - [Domain/Entities] `Conversation.cs` — NEW: `Id`, `MatchId`, `CustomerId`, `PhotographerId`, `Status` (Active/Archived/Closed), `CreatedAt`, `LastMessageAt?`
   - [Domain/Entities] `Message.cs` — NEW: `Id`, `ConversationId`, `SenderId`, `SenderRole` (customer/photographer), `Content`, `ContentType` (Text/Image), `SentAt`, `ReadAt?`
@@ -287,11 +286,11 @@
   - GraphQL: `swipeFeed(searchId)`, `me`
 - Build: succeeded. 0 Warning(s). 0 Error(s).
 - Flow đã nối:
-  - `POST /swipes` → `RecordSwipeCommandHandler` → save SwipeAction → if Right: `SwipeRightRecordedHandler` → check mutual → `MatchAggregate.Create()` + `Accept()` → raise `MatchCreated` → save Match.
-  - `POST /bookings` → `CreateBookingCommandHandler` → load Match → `MarkBookingCreated()` (invariant Active) → `BookingAggregate.Create()` → save.
-  - `POST /reviews` → `SubmitReviewCommandHandler` → load Booking → `EnsureCanBeReviewed()` (invariant Completed) → dedup → save Review.
+  - `POST /swipes` → `RecordSwipeCommandHandler` → Save SwipeAction → if Right: `SwipeRightRecordedHandler` → check mutual → `MatchAggregate.Create()` + `Accept()` → raise `MatchCreated` → Save Match.
+  - `POST /bookings` → `CreateBookingCommandHandler` → load Match → `MarkBookingCreated()` (invariant Active) → `BookingAggregate.Create()` → Save.
+  - `POST /reviews` → `SubmitReviewCommandHandler` → load Booking → `EnsureCanBeReviewed()` (invariant Completed) → dedup → Save Review.
 - Risks/Next:
-  - Gap 1: Remaining domain event handlers (BookingCompleted → escrow release, BookingCancelled → refund, PhotographerVerified, PremiumExpired).
+  - Gap 1: Remaining Domain event handlers (BookingCompleted → escrow release, BookingCancelled → refund, PhotographerVerified, PremiumExpired).
   - Gap 6: Wire PhotographerAggregate + Value Objects vào MatchingOrchestrator.
   - Khi chuyển sang PostgreSQL, `HasPhotographerSwipedRightAsync` cần implement thật.
 
@@ -322,18 +321,162 @@
   - Cần thêm XML doc comments cho controllers để Swagger mô tả endpoint đầy đủ hơn.
   - Cân nhắc split SecurityRequirement: endpoint OTP public, endpoint khác require Bearer.
 
-## Session YYYY-MM-DD HH:mm
-- Goal:
+---
+
+## 2026-05-09 — Photographer Mobile UX overhaul + bookings/calendar polish ✅
+- Goal: nâng cấp toàn bộ luồng Photographer trên mobile, fix profile/cover/avatar upload, verified flow, và làm lại màn bookings/calendar cho đẹp, rõ và có điểm nhấn hơn.
+
+### Mobile — Profile / Media / Verification
+- [Mobile] `PProfileScreen.tsx`
+  - Fix partial update profile basic info:
+    - gửi `displayName`, `bio`, `quote` theo kiểu patch/merge.
+    - log lỗi chi tiết khi update thất bại để dễ debug backend.
+  - Avatar/Cover upload:
+    - thêm `expo-image-manipulator` để resize/nén trước khi upload.
+    - tách nút đổi ảnh avatar và ảnh bìa ra khỏi overlay dễ bị chặn touch.
+    - cover button được đưa thành `Pressable` độc lập trên top layer để xử lý lỗi “nhấn không mở picker”.
+  - Verified flow:
+    - hiển thị badge `Đã xác minh / Đang chờ xác minh / Chưa xác minh`.
+    - thêm CTA `Gửi yêu cầu xác minh` ngay trên profile.
+    - handle case backend trả `Verification already in progress.` bằng UI thân thiện hơn.
+  - UX polish:
+    - reload profile khi focus lại screen.
+    - cập nhật trạng thái save/upload ngay trong UI.
+
+- [Mobile] `api.ts`
+  - `uploadProfileImage()` dùng endpoint riêng cho avatar/cover (`/api/photographers/profile/avatar/upload`, `/profile/cover/upload`) trong giai đoạn đầu, sau đó đồng bộ lại theo endpoint storage chung tùy backend.
+  - `submitVerification()` được tối giản về luồng gửi request verify từ profile.
+
+### Mobile — Dashboard / Navigation / Tabs
+- [Mobile] `DashboardScreen.tsx`
+  - Dashboard không còn phụ thuộc cover photo của profile.
+  - Hero background quay về ảnh mặc định trước đó để giữ consistency.
+  - Quick actions đổi route phù hợp với flow mới.
+
+- [Mobile] `PhotographerTabs.tsx`
+  - Bổ sung/điều chỉnh navigation cho các màn Photographer liên quan:
+    - `PBookings`
+    - `PProfile`
+    - `Portfolio`
+    - các màn new/existing cho quản lý dịch vụ, lịch hẹn.
+
+### Mobile — Bookings / Calendar / Service management
+- [Mobile] `PBookingsScreen.tsx`
+  - Gộp calendar view trực tiếp vào màn bookings.
+  - Rework layout theo style premium:
+    - header có điểm nhấn, hero stats, card trắng, spacing rõ.
+    - calendar dạng lưới có màu trắng, nút chuyển tháng trái/phải.
+    - tab lọc hiển thị đầy đủ chữ, không bị cắt.
+  - Lịch theo ngày đã chọn:
+    - block `Lịch cụ thể` hiển thị bookings của ngày đang chọn.
+    - status badge tiếng Việt: `Chờ duyệt`, `Đã xác nhận`, `Hoàn thành`.
+  - Tối ưu khả năng cuộn và tránh lịch bị “fixed cứng”.
+
+- [Mobile] `ServiceManagementScreen.tsx`
+  - NEW screen mock quản lý dịch vụ & giá.
+  - CRUD UI cho service packages (thêm/sửa/xóa) theo style dark premium.
+
+- [Mobile] `BookingCalendarScreen.tsx`
+  - Tạo calendar screen standalone trong quá trình thử nghiệm trước khi tích hợp lại vào `PBookingsScreen`.
+
+### Backend — Photographer profile & upload
+- [API] `PhotographersController.cs`
+  - `UpdateProfile()` chuyển sang merge partial update để mobile chỉ gửi một phần field vẫn hoạt động.
+  - Thêm endpoints upload riêng cho profile media trong quá trình xử lý avatar/cover:
+    - `POST /api/photographers/profile/avatar/upload`
+    - `POST /api/photographers/profile/cover/upload`
+  - Tích hợp verified flow API: `POST /api/photographers/verify`.
+
+- [API] `PhotographerRequests.cs`
+  - `UpdatePhotographerProfileRequest` được chỉnh lại để hỗ trợ nullable/partial update cho mobile.
+
+- [Infrastructure] storage integration
+  - Tận dụng storage upload sẵn có cho media, đồng thời chuẩn hoá luồng public URL từ backend.
+
+### Bugs fixed from terminal logs
+- Fix build fail do trùng class `UpdatePhotographerProfileRequest`.
+- Fix validation error khi backend yêu cầu `AvatarUrl` / `CoverPhotoUrl` bắt buộc trong luồng update profile text-only.
+- Fix lỗi upload avatar trả `404` do mobile gọi sai endpoint.
+- Fix lỗi touch của nút đổi ảnh bìa bị overlay che.
+- Fix lỗi verification bị báo `Verification already in progress.` bằng message thân thiện hơn.
+- Fix lỗi UI hiển thị tab lọc/calendar bị cắt chữ và calendar quá cứng.
+
+### Result
+- Photographer profile flow hiện đã có:
+  - cập nhật basic info
+  - đổi avatar
+  - đổi cover
+  - verified badge + submit verification
+- Bookings flow hiện đã có:
+  - calendar theo tháng
+  - lọc theo status
+  - lịch cụ thể theo ngày
+  - UI sáng hơn, có điểm nhấn hơn
+
+### Next ideas
+- Nối service management screen với backend thật.
+- Nối calendar/booking UI với data real-time tốt hơn.
+- Làm animation nhẹ khi đổi tháng / đổi filter / đổi profile media.
+
+### Backend
+- ✅ Tạo 8 EF Core repositories thay thế toàn bộ InMemory
+- ✅ Thêm `Reconstitute()` factory vào `MatchAggregate`, `BookingAggregate`
+- ✅ `DependencyInjection.cs`: Singleton InMemory → Scoped EF repos
+- ✅ Migration `AddPasswordHashAndGoogleId` — applied to PostgreSQL
+- ✅ `AuthService` + `PhotographerAuthService`: thêm `RegisterWithEmail`, `LoginWithEmail`, `LoginWithGoogle`
+- ✅ 6 new endpoints: `/register`, `/login`, `/google` cho cả 2 roles
+- ✅ `ShootMatchDbContext`: thêm indexes email/google_id/phone
+
+### Mobile
+- ✅ `AuthContext`: thêm `loginWithEmail`, `registerWithEmail`, `loginWithGoogle`
+- ✅ `types.ts`: mở rộng `AuthStackParamList` với 4 screens mới
+- ✅ `AuthNavigator.tsx`: register đầy đủ 7 screens
+- ✅ `RoleSelectScreen`: navigate → `AuthMethod` thay `Login`
+- ✅ 4 screens mới: `AuthMethodScreen`, `EmailLoginScreen`, `RegisterScreen`, `PhoneLoginScreen`
+
+### Verification
+- ✅ Backend: `0 errors`
+- ✅ Mobile TypeScript: `0 errors`
+
+## Session 2026-05-06 00:05 — Cập nhật UI Dashboard & Portfolio Photographer (Full Overhaul)
+- Goal: Chuyển đổi toàn bộ giao diện quản lý của Photographer sang phong cách chuyên nghiệp, xử lý dữ liệu thật và tối ưu hiệu năng ảnh 4K.
 - Changes:
-  - [Layer] ...
-  - [Entity] ...
-  - [UseCase] ...
-- Migration:
-  - Added:
-  - Applied: yes/no
-  - Error (if any):
+  - [Mobile] DashboardScreen.tsx:
+    - Thống kê real-time: Doanh thu tháng (AgreedPrice của Completed/Paid), số lượng booking.
+    - Portfolio Mosaic: Fetch data từ GraphQL, fix lỗi render ảnh localhost.
+    - Thêm chức năng Logout.
+  - [Mobile] graphql.ts:
+    - Thay fetch bằng apiClient.post để tận dụng Axios Interceptors (Auth token + Refresh logic).
+  - [Mobile] UploadPortfolioScreen.tsx:
+    - UI/UX: Chuyển sang Bento Box / Editorial Grid + Dark Theme.
+    - Masonry Algorithm: Sử dụng Image.getSize đo tỷ lệ thật, chia 2 cột so le.
+    - Gallery Viewer: Modal viewer với Swiper logic + Thumbnail ScrollView đồng bộ.
+    - Absolute Positioning: Fix lỗi xám đen do React unmount component khi thay đổi thứ tự mảng.
+    - Bulk Delete: Long-press activation, Multi-select mode, Header action bar.
+    - Multiple Upload: Chọn nhiều ảnh cùng lúc, upload tuần tự với tiến độ real-time.
+  - [Mobile] Performance:
+    - expo-image-manipulator: Downscale ảnh 4K/2K > 1920px để tránh Out-of-Memory (OOM).
+    - useSafeAreaInsets: Fix UI overlap trên notched devices.
+- Migration: None
 - API Contracts:
-  - REST:
-  - GraphQL:
+  - GraphQL: photographerProfile (portfolioPhotos, statistics)
+  - REST: DELETE /api/photographers/portfolio/{url} (Batch support via loop)
 - Risks/Next:
-```
+  - Cần tối ưu thêm tốc độ Image.getSize nếu portfolio có > 100 ảnh.
+## Session 2026-05-14 — Photographer profile + service page polish
+- Goal: làm rõ luồng cập nhật profile/service trên mobile, giữ `PasswordHash` an toàn, fix Swagger, và redesign màn dịch vụ/giá theo hướng nghệ thuật hơn.
+- Changes:
+  - [API] `PhotographersController.UpdateProfile()` giữ nguyên `PasswordHash`/`GoogleId` khi update profile.
+  - [Infrastructure] `EfPhotographerRepository.UpsertAsync()` fallback về giá trị cũ nếu `PasswordHash`/`GoogleId` null để tránh ghi đè mất dữ liệu.
+  - [Infrastructure] `EfPhotographerRepository` map đầy đủ `Quote` ở cả `ToEntity()` và `ToRecord()`.
+  - [API] `Program.cs` bật Swagger luôn, redirect `/` → `/swagger`, giúp mở docs dễ hơn trong dev.
+  - [API] Fix Swagger file upload endpoints bằng cách đổi `IFormFile` sang request wrapper `UploadPhotographerPhotoRequest` với `[FromForm]`.
+  - [Mobile] `PProfileScreen.tsx` reload profile sau khi lưu quote/displayName/bio để UI đồng bộ với DB.
+  - [Mobile] `PProfileScreen.tsx` chỉnh quote section để hiển thị rõ hơn và canh giữa tốt hơn.
+  - [Mobile] `ServiceManagementScreen.tsx` redesign theo hướng catalogue nghệ thuật: hero, badge, stats, card, action buttons, số tiền hiển thị ổn định hơn không bị xuống dòng.
+- Notes:
+  - Lỗi Swagger trước đó đến từ `UploadAvatar/UploadCover` dùng `[FromForm] IFormFile` trực tiếp nên Swashbuckle không generate được operation.
+  - Vấn đề quote “hiển thị thiếu” chủ yếu do layout wrapper text/icon và canh giữa chưa đúng, đã tinh lại theo hướng centered.
+  - Nút `Chỉnh sửa gói` từng bị chìm màu trên nền tối, đã tách icon/text thành style sáng hơn.
+- Next:
+  - Nếu cần, tiếp tục thống nhất tone màu cho toàn bộ Photographer mobile screens để cùng một visual system.
