@@ -244,3 +244,79 @@ DB_USER=
 DB_PASS=
 ```
 Khi setup lên Server VPS, chỉ cần gõ lệnh `cp .env.example .env` rồi tự tay mở file `.env` điền mật khẩu thật vào. Cực kỳ an toàn và tránh sai sót!
+
+---
+
+## 6. Mẹo nhỏ: Ngoặc đơn, Ngoặc kép và Biến trong lệnh Run (Bash)
+
+Khi viết các lệnh Terminal trong phần `run:` của GitHub Actions (sử dụng Bash shell), bạn cần lưu ý cách sử dụng dấu ngoặc để in văn bản và gọi biến:
+
+**1. Chỉ in chữ bình thường (Text):**
+Chỉ cần dùng ngoặc kép `""` hoặc ngoặc đơn `''`.
+Ví dụ: `echo "Đang chuẩn bị deploy lên..."` hoặc `echo 'Xin chào'`
+
+**2. Gọi Biến (Variables):**
+Bắt buộc phải có dấu `$` ở đầu để hệ thống nhận diện đó là biến.
+Ví dụ: `echo $SERVER_NAME`
+
+**3. Ghép Chữ và Biến (Kỹ năng quan trọng):**
+Nếu muốn in cả chữ lẫn biến trên cùng một dòng, sự khác biệt giữa hai loại ngoặc cực kỳ rõ ràng:
+- **Ngoặc kép `""` (Có nội suy biến):** Sẽ tự động thay thế dấu `$` thành giá trị thực của biến.
+  👉 `echo "Đang deploy lên server $SERVER_NAME nhé!"`
+  💻 Kết quả: `Đang deploy lên server Production Server nhé!`
+
+- **Ngoặc đơn `''` (Chuỗi thô/Raw string):** Coi mọi thứ bên trong là văn bản thô, bao gồm cả ký tự `$`.
+  👉 `echo 'Đang deploy lên server $SERVER_NAME nhé!'`
+  💻 Kết quả: `Đang deploy lên server $SERVER_NAME nhé!`
+
+**💡 Lời khuyên:** Trong CI/CD, thường ưu tiên dùng **Ngoặc kép `""`** cho các lệnh `echo` để dễ dàng chèn biến môi trường vào giữa câu.
+
+---
+
+## 7. Các Cú Pháp Thực Chiến Quan Trọng (Needs, If, Matrix)
+
+Dưới đây là đúc kết từ quá trình thực hành, giúp liên kết và tối ưu hóa các Jobs:
+
+### 7.1. Chờ đợi nhau bằng `needs`
+Mặc định các Job chạy song song. Dùng `needs` để ép một Job phải đợi Job khác chạy xong mới được phép bắt đầu.
+```yaml
+jobs:
+  build-app:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Xây nhà xong"
+  
+  deploy-app:
+    needs: build-app # Bắt buộc chờ build-app thành công
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Chuyển đồ vào ở"
+```
+
+### 7.2. Người gác cổng `if` và Biểu thức `${{ }}`
+Dùng để kiểm tra điều kiện sinh tử của một Job. Trong khóa `if`, GitHub tự động đánh giá biểu thức nên **không bắt buộc** phải bọc trong `${{ }}` (tuy nhiên nếu dùng ở nơi khác như chuỗi văn bản thì phải bọc).
+```yaml
+  deploy-app:
+    # Chỉ cho phép chạy nếu user bấm nút là Thinhtran2412
+    if: github.actor == 'Thinhtran2412'
+    # Hoặc viết tường minh: if: ${{ github.actor == 'Thinhtran2412' }}
+    runs-on: ubuntu-latest
+    steps:
+      # Chèn giá trị biến môi trường vào chuỗi bằng ${{ }}
+      - run: echo "Đại ca ${{ github.actor }} đang deploy"
+```
+
+### 7.3. Phân thân chi thuật `strategy.matrix`
+Thay vì phải nhân bản một Job thành nhiều đoạn code giống nhau, `matrix` giúp tạo ra nhiều phiên bản của Job chạy song song trên các tham số khác nhau. Rất hữu ích khi test trên nhiều phiên bản Node.js hoặc deploy ra nhiều môi trường.
+```yaml
+  deploy-app:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        server_env: ['Dev', 'Staging', 'Production'] # Khai báo mảng
+    steps:
+      - name: Deploy App
+        # Gọi giá trị ra bằng ${{ matrix.tên_biến }}
+        run: echo "Đang deploy lên server ${{ matrix.server_env }}"
+```
+Kết quả: GitHub sẽ tự động tạo ra 3 Job song song: `deploy-app (Dev)`, `deploy-app (Staging)`, `deploy-app (Production)`.
