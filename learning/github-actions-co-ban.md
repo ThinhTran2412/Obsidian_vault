@@ -320,3 +320,24 @@ Thay vì phải nhân bản một Job thành nhiều đoạn code giống nhau, 
         run: echo "Đang deploy lên server ${{ matrix.server_env }}"
 ```
 Kết quả: GitHub sẽ tự động tạo ra 3 Job song song: `deploy-app (Dev)`, `deploy-app (Staging)`, `deploy-app (Production)`.
+
+---
+
+## 8. Những "Cạm Bẫy" Thường Gặp (Rút ra từ Thực chiến)
+
+Dưới đây là một số nhầm lẫn cực kỳ phổ biến mà người mới thường hay mắc phải khi viết file YAML CI/CD, hãy lưu ý kỹ nhé:
+
+### 8.1. Bẫy sự kiện Merge (Gộp code)
+Trong GitHub Actions **không có** sự kiện nào tên là `on: merge`. Khi một người tạo yêu cầu gộp code hoặc khi code thực sự được gộp, ta đều quản lý thông qua sự kiện **`pull_request`** (hoặc cấu hình bắt sự kiện `push` trực tiếp lên nhánh `main`).
+
+### 8.2. Bẫy Bỏ qua Lỗi (Ignore Errors)
+Từ khóa `ignore-errors` **không tồn tại** trong YAML của GitHub Actions. Để bỏ qua lỗi của 1 step (ví dụ step đó chạy test bị fail nhưng bạn vẫn muốn luồng chạy tiếp tục để build) thì bạn bắt buộc phải dùng thuộc tính **`continue-on-error: true`**.
+
+### 8.3. Bẫy Chạy Tuần Tự vs Song Song
+Mặc định, nếu bạn khai báo nhiều Jobs mà không dùng `needs` để ràng buộc chúng, GitHub Actions sẽ **chạy tất cả các Jobs CÙNG MỘT LÚC (Song song)** trên các máy ảo khác nhau. Điều này giúp tối ưu thời gian. Nếu bạn muốn chúng chạy nối tiếp nhau (ví dụ test xong mới deploy), **bắt buộc** phải sử dụng `needs: [job_truoc_do]`.
+
+### 8.4. Sức mạnh của hàm `hashFiles()` trong Caching
+Hàm `hashFiles('**/package-lock.json')` thường được dùng để phục vụ cho tính năng **Caching**. 
+- Hàm này sẽ đọc file `package-lock.json` và băm ra một chuỗi mã đại diện. 
+- Lần chạy tiếp theo, nếu bạn không cài thêm thư viện nào mới, mã hash này giữ nguyên -> Hệ thống sẽ lấy thẳng `node_modules` từ Cache ra dùng (tiết kiệm thời gian chạy `npm install`). 
+- Nếu bạn cài thêm thư viện -> file thay đổi -> mã hash thay đổi -> Hệ thống tự hiểu Cache đã cũ và sẽ tiến hành chạy lệnh cài đặt lại.

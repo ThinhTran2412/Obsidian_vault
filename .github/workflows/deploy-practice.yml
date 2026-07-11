@@ -1,0 +1,45 @@
+name: Mock Deployment Practice
+
+# 1. Sự kiện kích hoạt: Cho phép chạy thủ công
+on:
+  workflow_dispatch:
+
+jobs:
+  # 2. Job 1: Build Ứng dụng
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Giả lập quá trình build
+        run: |
+          echo "Đang build ứng dụng..."
+          sleep 2
+          
+  # 3. Job 2: Chạy Test
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: 
+        browser: 
+          - chrome
+          - safari
+          - edge
+    steps:
+      - name: Chạy test đa trình duyệt
+        # TODO: Viết lệnh in ra màn hình "Đang test trên trình duyệt: [Tên trình duyệt]"
+        run: |
+          echo "Đang test trên trình duyệt: ${{ matrix.browser }}"
+
+  # 4. Job 3: Triển khai lên Production
+  deploy:
+    needs: test
+    # TODO: Thêm điều kiện if chỉ chạy nếu github.actor là 'Thinhtran2412'
+    if: github.actor == 'Thinhtran2412'
+    runs-on: ubuntu-latest
+    # TODO: Khai báo biến môi trường SERVER_PORT là 8080 cho job này
+    env: 
+      SERVER_PORT: 8080
+    steps:
+      - name: Deploy app
+        # TODO: Viết lệnh in ra "Đại ca [Tên người chạy] đang deploy lên cổng [Cổng]"
+        run: echo "Đại ca ${{ github.actor }} đang deploy lên cổng ${{ env.SERVER_PORT }}"

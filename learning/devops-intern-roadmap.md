@@ -160,3 +160,13 @@ Nắm vững các công cụ và tư duy hệ thống cơ bản nhất để t�
   - Thi triển xuất sắc tuyệt chiêu Phân thân chi thuật (`strategy.matrix`) để chạy 3 Jobs song song (Dev, Staging, Production).
   - Khám phá ra bí mật của Bash Script: Phân biệt sự khác nhau một trời một vực giữa ngoặc kép `""` (nội suy biến) và ngoặc đơn `''` (raw string) khi gọi biến môi trường trong bước `run`.
 - **Trạng thái cảm xúc/Khó khăn:** Đại ca tự tay code và nghiệm thu hoàn hảo từng chặng. Trình độ đã chính thức chạm mốc 5% thực hành DevOps!
+
+### \[2026-07-09\] Trắc Nghiệm Ôn Tập CI/CD & Cạm Bẫy Thực Chiến
+- **Tiến độ:** Hoàn thành bài trắc nghiệm 20 câu hóc búa về YAML và GitHub Actions với điểm số ấn tượng 16/20.
+- **Chi tiết:**
+  - Ôn tập sâu sắc về cú pháp Bash (ngoặc đơn vs ngoặc kép), cấu trúc YAML (Array vs Object).
+  - Phá vỡ các lầm tưởng phổ biến: Nhận diện không có sự kiện `merge` (phải dùng `pull_request`), thuộc tính bỏ qua lỗi là `continue-on-error` (không phải `ignore-errors`).
+  - Nắm vững cơ chế chạy mặc định của GitHub Actions là **Song song (Parallel)** nếu không có `needs`.
+  - Hiểu rõ ứng dụng thực tế của hàm `hashFiles()` trong việc tạo mã băm phục vụ Caching `node_modules`.
+  - Cập nhật thành công các cạm bẫy này vào Bách khoa toàn thư `github-actions-co-ban.md`.
+- **Trạng thái cảm xúc/Khó khăn:** Đại ca vẫn giữ phong độ cực kỳ sắc bén, phát hiện được cả bẫy cú pháp. Cực kỳ cẩn thận và chủ động yêu cầu hệ thống ghi chép lại. Sẵn sàng 100% tiến vào bài thực hành!
