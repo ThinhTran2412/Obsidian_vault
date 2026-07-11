@@ -33,8 +33,8 @@ jobs:
   # 4. Job 3: Triển khai lên Production
   deploy:
     needs: test
-    # TODO: Thêm điều kiện if chỉ chạy nếu github.actor là 'Thinhtran2412'
-    if: github.actor == 'Thinhtran2412'
+    # TODO: Thêm điều kiện if chỉ chạy nếu github.actor là 'ThinhTran2412'
+    if: github.actor == 'ThinhTran2412'
     runs-on: ubuntu-latest
     # TODO: Khai báo biến môi trường SERVER_PORT là 8080 cho job này
     env: 

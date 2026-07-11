@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "dD43QiYQ79k=",
+  "success": true,
+  "projectFilePath": "/data/Vault/CleanArchitectureDemo/CleanApi.WebApi/CleanApi.WebApi.csproj",
+  "expectedPackageFiles": [
+    "/home/thai-thinh/.nuget/packages/microsoft.aspnetcore.openapi/9.0.4/microsoft.aspnetcore.openapi.9.0.4.nupkg.sha512",
+    "/home/thai-thinh/.nuget/packages/microsoft.openapi/1.6.17/microsoft.openapi.1.6.17.nupkg.sha512"
+  ],
+  "logs": []
+}

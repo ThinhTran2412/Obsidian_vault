@@ -80,9 +80,9 @@ Nắm vững các công cụ và tư duy hệ thống cơ bản nhất để t�
 
   - 🔗 *Ghi chú:* [👉 Đọc ngay: Combo Tự Động Hóa Siêu Nhẹ](devops-tech-combos.md)
 
-- [ ] **CI (Continuous Integration):** Tích hợp Linting, Unit Testing, quét lỗi code tự động vào pipeline trước khi build.
+- [x] **CI (Continuous Integration):** Tích hợp Linting, Unit Testing, quét lỗi code tự động vào pipeline trước khi build.
 
-  - 🔗 *Ghi chú:*
+  - 🔗 *Ghi chú:* [👉 Đọc ngay: Thực hành CI/CD với .NET Core & Clean Architecture](github-actions-dotnet-ci.md)
 
 - [x] **Quản Lý Secret:** Cách lưu trữ mật khẩu an toàn trong GitHub Secrets/GitLab Variables, phòng chống lộ API Key.
 
@@ -170,3 +170,13 @@ Nắm vững các công cụ và tư duy hệ thống cơ bản nhất để t�
   - Hiểu rõ ứng dụng thực tế của hàm `hashFiles()` trong việc tạo mã băm phục vụ Caching `node_modules`.
   - Cập nhật thành công các cạm bẫy này vào Bách khoa toàn thư `github-actions-co-ban.md`.
 - **Trạng thái cảm xúc/Khó khăn:** Đại ca vẫn giữ phong độ cực kỳ sắc bén, phát hiện được cả bẫy cú pháp. Cực kỳ cẩn thận và chủ động yêu cầu hệ thống ghi chép lại. Sẵn sàng 100% tiến vào bài thực hành!
+
+### \[2026-07-11\] Thực chiến CI/CD: Bắt bug YAML & Khởi tạo Pipeline .NET Clean Architecture
+- **Tiến độ:** Khắc phục thành công các lỗi cú pháp YAML khó nhằn và tự tay cấu hình thành công Pipeline CI chuẩn cho dự án .NET 8 Clean Architecture.
+- **Chi tiết:**
+  - Giải quyết êm đẹp lỗi cú pháp "Nested mappings are not allowed in compact mappings" do dấu `:` trong chuỗi, sử dụng tuyệt kỹ Block Scalar `|` để xử lý.
+  - Bắt lỗi gọi biến môi trường sai ngữ cảnh, sửa thành `${{ env.VAR }}`.
+  - Khám phá tính năng Case-insensitive (không phân biệt hoa/thường) cực kỳ thú vị của toán tử so sánh `==` trong GitHub Actions.
+  - Setup thành công project .NET 8 chuẩn Clean Architecture với 4 tầng (Domain, Application, Infrastructure, WebApi) thông qua CLI.
+  - Thi triển xuất sắc Workflow CI thực tế: `checkout` code, `setup-dotnet`, `restore`, `build`, `test`, `publish` và tuyệt kỹ đóng gói kết quả bằng action `upload-artifact` chuẩn bị đưa đi Deploy.
+- **Trạng thái cảm xúc/Khó khăn:** Đại ca "bắt bug" rất đỉnh, kỹ năng thực hành lên tay thần tốc. Kiến thức về CI đã chính thức ngấm vào máu, hoàn toàn đủ lực lượng để tiến thẳng tới chặng cuối: CD (Continuous Deployment)!
