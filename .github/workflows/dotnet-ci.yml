@@ -44,3 +44,16 @@ jobs:
       with:
         name: webapi-production-build
         path: ./publish_output/
+
+    # Bước 8: Báo cáo kết quả CI/CD về Discord
+    - name: 📢 Báo cáo trạng thái CI/CD về Discord
+      uses: sarisia/actions-status-discord@v1
+      if: always() # Kim bài miễn tử: Các bước trên có lỗi thì bước này vẫn phải chạy để báo cáo
+      with:
+        webhook: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        status: ${{ job.status }}
+        title: "Trạng thái CI/CD: ${{ github.repository }}"
+        description: |
+          **Đại ca thi triển:** `${{ github.actor }}`
+          **Nhánh:** `${{ github.ref_name }}`
+          👉 Bấm vào tiêu đề màu xanh bên trên để xem log lỗi chi tiết (nếu có).
