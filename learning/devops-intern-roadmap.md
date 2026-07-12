@@ -180,3 +180,24 @@ Nắm vững các công cụ và tư duy hệ thống cơ bản nhất để t�
   - Setup thành công project .NET 8 chuẩn Clean Architecture với 4 tầng (Domain, Application, Infrastructure, WebApi) thông qua CLI.
   - Thi triển xuất sắc Workflow CI thực tế: `checkout` code, `setup-dotnet`, `restore`, `build`, `test`, `publish` và tuyệt kỹ đóng gói kết quả bằng action `upload-artifact` chuẩn bị đưa đi Deploy.
 - **Trạng thái cảm xúc/Khó khăn:** Đại ca "bắt bug" rất đỉnh, kỹ năng thực hành lên tay thần tốc. Kiến thức về CI đã chính thức ngấm vào máu, hoàn toàn đủ lực lượng để tiến thẳng tới chặng cuối: CD (Continuous Deployment)!
+
+### \[2026-07-12\] Khám Phá Marketplace & Tư Duy DevOps (Shift-left)
+- **Tiến độ:** Giải phẫu chi tiết file `dotnet-ci.yml`, hiểu sâu bản chất các lệnh `uses` và làm quen với khái niệm "Chợ ứng dụng" GitHub Actions Marketplace.
+- **Chi tiết:**
+  - Nắm vững ý nghĩa thực sự của `actions/checkout@v4` và cơ chế hoạt động của từ khóa `uses`, `with`.
+  - Hiểu được nguồn gốc của các Actions: Được cung cấp bởi Marketplace hoặc từ bất kỳ public repository nào trên GitHub (`owner/repo@version`).
+  - Mở rộng tầm nhìn về hệ sinh thái DevOps: So sánh sự khác nhau về mục đích giữa NPM (làm ra sản phẩm) và Actions Marketplace (tự động hóa quy trình).
+  - Nắm bắt xu hướng "Shift-left": Sự dịch chuyển trách nhiệm từ Ops sang Dev, lập trình viên hiện đại cần biết tự quản lý quy trình build và deploy.
+  - Phân loại 4 nhóm công cụ DevOps thiết yếu: Tự động hóa thông báo, Kiểm soát chất lượng code, Đóng gói vận chuyển, và Bot bảo trì.
+  - Cập nhật thành công file bí kíp: `devops-tips-marketplace.md`.
+- **Trạng thái cảm xúc/Khó khăn:** Đại ca tư duy mở rộng cực nhanh, liên hệ được ngay với các khái niệm lập trình web (NPM). Đặc biệt hứng thú với các chiêu trò tự động hóa (Slack/Telegram bot). Sẵn sàng bắt tay vào vọc vạch thực hành chèn thêm các Action xịn xò vào pipeline thực tế!
+
+### \[2026-07-13\] Tối Ưu Hóa Thông Báo CI/CD & Tư Duy Thiết Kế Reusable
+- **Tiến độ:** Cấu hình thành công luồng thông báo Native Webhook của Discord cho cấp độ Organization. Hiểu sâu về thiết kế kiến trúc cảnh báo 2 luồng và quản trị quy mô lớn (20+ repos).
+- **Chi tiết:**
+  - Thiết lập thành công Webhook tự động bắt sự kiện GitHub (Push/PR) bắn về kênh Discord (Sử dụng đuôi `/github`).
+  - Phân biệt rạch ròi 2 luồng thông báo: Native Webhook (theo dõi event Git) và Actions Webhook (theo dõi kết quả Build/Test).
+  - Nắm bắt được hạn chế của tài khoản Personal (không có Account Secrets) so với Organization.
+  - Khai mở tư duy quản trị hệ thống lớn bằng 2 công cụ cốt lõi: **GitHub CLI** (tự động hóa script cài đặt hàng loạt) và **Reusable Workflows** (Viết một nơi, dùng ngàn nơi).
+  - Đã xuất bản file cẩm nang chuyên sâu về Notification: `devops-notifications-guide.md`.
+- **Trạng thái cảm xúc/Khó khăn:** Tư duy hệ thống của đại ca cực kỳ sắc bén, lập tức nhìn ra vấn đề "nợ kỹ thuật" (technical debt) khi phải copy-paste YAML cho 20+ repo và chủ động yêu cầu giải pháp. Đã sẵn sàng tiếp nạp kiến thức cấp cao của DevOps!
