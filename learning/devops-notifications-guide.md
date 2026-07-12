@@ -1,4 +1,4 @@
-# 🔔 Hướng Dẫn Tích Hợp Thông Báo (Discord/Slack/Telegram) Vào DevOps
+# 🔔 Hướng Dẫn Tích Hợp Thông Báo (Discord/Telegram) Vào DevOps
 
 Tài liệu này lưu trữ các cấu hình chuẩn để gửi thông báo từ GitHub về các nền tảng chat, giúp theo dõi trạng thái dự án (Code push, CI/CD) theo thời gian thực một cách tự động.
 

@@ -54,6 +54,7 @@ jobs:
         status: ${{ job.status }}
         title: "Trạng thái CI/CD: ${{ github.repository }}"
         description: |
-          **Đại ca thi triển:** `${{ github.actor }}`
+          **Người chạy:** `${{ github.actor }}`
           **Nhánh:** `${{ github.ref_name }}`
-          👉 Bấm vào tiêu đề màu xanh bên trên để xem log lỗi chi tiết (nếu có).
+          **Nội dung Commit:** `${{ github.event.head_commit.message }}`
+          👉 Bấm vào tiêu đề màu xanh bên trên để xem log chi tiết.
